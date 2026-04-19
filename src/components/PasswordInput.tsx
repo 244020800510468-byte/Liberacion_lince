@@ -32,11 +32,11 @@ export function PasswordInput({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-foreground/90">
+      <label htmlFor={id} className="text-sm font-medium text-neutral-200">
         {label}
       </label>
       {hint ? (
-        <p className="text-xs text-lince-blue">{hint}</p>
+        <p className="text-xs text-[#7ab3e0]">{hint}</p>
       ) : null}
       <div className="relative">
         <input
@@ -49,13 +49,13 @@ export function PasswordInput({
           onBlur={onBlur}
           aria-invalid={error ? "true" : undefined}
           aria-describedby={error ? errorId : undefined}
-          className="w-full rounded-xl border border-neutral-300 bg-white/90 px-3 py-2.5 pr-11 text-foreground outline-none ring-lince-accent focus:border-lince-accent focus:ring-2"
+          className="w-full rounded-xl border border-neutral-600 bg-[#2d2d2d] px-3 py-2.5 pr-11 text-neutral-100 outline-none transition focus:border-[#5FAF2E] focus:ring-2 focus:ring-[#5FAF2E]/40"
         />
         <button
           type="button"
           tabIndex={-1}
           onClick={() => setVisible((v) => !v)}
-          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-lg text-neutral-600 hover:bg-white/80"
+          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-lg text-neutral-400 hover:bg-white/10"
           aria-label={visible ? "Ocultar contraseña" : "Mostrar contraseña"}
         >
           👁

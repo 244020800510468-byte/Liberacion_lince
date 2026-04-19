@@ -7,6 +7,7 @@ import { AuthCard } from "@/components/AuthCard";
 import { CountdownButton } from "@/components/CountdownButton";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { SuccessMessage } from "@/components/SuccessMessage";
+import { INPUT_DARK, LINK_ON_DARK } from "@/lib/ui";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -30,13 +31,13 @@ export default function RecuperarAdminEmpleadoPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#FAFAFA] px-4 py-10">
-      <AuthCard variant="admin">
+    <div className="flex min-h-screen items-center justify-center bg-[#1e1e1e] px-4 py-10 text-neutral-100">
+      <AuthCard>
         <div className="flex flex-col gap-6">
-          <h1 className="text-center text-2xl font-black text-white drop-shadow">Liberación Lince</h1>
+          <h1 className="text-center text-2xl font-black text-neutral-100">Liberación Lince</h1>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="emp-email" className="text-sm font-medium text-white/95">
+            <label htmlFor="emp-email" className="text-sm font-medium text-neutral-200">
               Correo electrónico
             </label>
             <input
@@ -53,7 +54,7 @@ export default function RecuperarAdminEmpleadoPage() {
                   setError("El correo no es válido");
                 }
               }}
-              className="w-full rounded-xl border border-white/40 bg-white/95 px-3 py-2.5 text-foreground outline-none ring-white focus:ring-2"
+              className={INPUT_DARK}
             />
             <ErrorMessage message={error} />
           </div>
@@ -64,26 +65,29 @@ export default function RecuperarAdminEmpleadoPage() {
               if (!validateEmail()) return;
               setSuccess(true);
             }}
-            className="bg-lince-primary hover:brightness-95"
+            className="bg-[#5FAF2E] hover:bg-[#A6E22E]"
           >
             Recuperar
           </CountdownButton>
 
           {success ? (
-            <SuccessMessage message="Se envió un correo a tu dirección de correo electrónico" />
+            <SuccessMessage
+              variant="admin"
+              message="Se envió un correo a tu dirección de correo electrónico"
+            />
           ) : null}
 
           <button
             type="button"
             disabled={!success}
             onClick={() => router.push("/login/admin")}
-            className="w-full rounded-xl bg-lince-primary py-3 text-sm font-bold text-[#FAFAFA] shadow transition enabled:hover:brightness-95 disabled:cursor-not-allowed disabled:bg-neutral-500 disabled:text-neutral-200"
+            className="w-full rounded-xl bg-[#5FAF2E] py-3 text-sm font-bold text-[#FAFAFA] shadow transition enabled:hover:bg-[#A6E22E] disabled:cursor-not-allowed disabled:bg-neutral-600 disabled:text-neutral-300"
           >
             Siguiente
           </button>
 
           <p className="text-center text-sm">
-            <Link href="/login/admin" className="font-medium text-lince-blue hover:underline">
+            <Link href="/login/admin" className={LINK_ON_DARK}>
               Volver al inicio de sesión
             </Link>
           </p>

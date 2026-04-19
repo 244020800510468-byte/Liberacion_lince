@@ -24,7 +24,7 @@ export function StudentRouteGuard({ children }: { children: React.ReactNode }) {
 
   if (!hydrated || !student) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center text-foreground/70">
+      <div className="flex min-h-[50vh] items-center justify-center bg-[#1e1e1e] text-neutral-400">
         Cargando…
       </div>
     );

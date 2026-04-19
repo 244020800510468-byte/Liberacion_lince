@@ -8,6 +8,7 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import { PasswordInput } from "@/components/PasswordInput";
 import { getDepartmentFromEmpleado } from "@/lib/departments";
 import { mockAdmin } from "@/lib/mock";
+import { INPUT_DARK, LINK_ON_DARK } from "@/lib/ui";
 import { useSessionStore } from "@/store/session-store";
 
 export default function LoginAdminPage() {
@@ -41,16 +42,16 @@ export default function LoginAdminPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#FAFAFA] px-4 py-10">
-      <AuthCard variant="admin">
+    <div className="flex min-h-screen items-center justify-center bg-[#1e1e1e] px-4 py-10">
+      <AuthCard>
         <div className="flex flex-col gap-6">
-          <h1 className="text-center text-2xl font-black tracking-tight text-white drop-shadow-sm">
+          <h1 className="text-center text-2xl font-black tracking-tight text-neutral-100">
             Liberacion lince
           </h1>
 
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="nempleado" className="text-sm font-medium text-white/95">
+              <label htmlFor="nempleado" className="text-sm font-medium text-neutral-200">
                 N. Empleado
               </label>
               <input
@@ -69,7 +70,7 @@ export default function LoginAdminPage() {
                     );
                   }
                 }}
-                className="w-full rounded-xl border border-white/40 bg-white/95 px-3 py-2.5 text-foreground outline-none ring-white focus:ring-2"
+                className={INPUT_DARK}
               />
               <ErrorMessage message={empleadoError} />
             </div>
@@ -94,22 +95,16 @@ export default function LoginAdminPage() {
           <button
             type="button"
             onClick={submit}
-            className="w-full rounded-xl bg-lince-primary py-3 text-center text-sm font-bold text-[#FAFAFA] shadow transition hover:brightness-95"
+            className="w-full rounded-xl bg-[#5FAF2E] py-3 text-center text-sm font-bold text-[#FAFAFA] shadow transition hover:bg-[#A6E22E]"
           >
             Iniciar sesion
           </button>
 
           <div className="flex flex-col gap-2 text-center text-sm">
-            <Link
-              href="/recuperar/admin/contrasena"
-              className="font-medium text-lince-blue drop-shadow hover:underline"
-            >
+            <Link href="/recuperar/admin/contrasena" className={LINK_ON_DARK}>
               ¿Olvidaste tu contraseña?
             </Link>
-            <Link
-              href="/recuperar/admin/empleado"
-              className="font-medium text-lince-blue drop-shadow hover:underline"
-            >
+            <Link href="/recuperar/admin/empleado" className={LINK_ON_DARK}>
               ¿Olvidaste tu número de empleado?
             </Link>
           </div>

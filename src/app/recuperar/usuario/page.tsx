@@ -6,6 +6,7 @@ import { AuthCard } from "@/components/AuthCard";
 import { CountdownButton } from "@/components/CountdownButton";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { mockStudent, MOCK_RECOVERY_CODE } from "@/lib/mock";
+import { INPUT_DARK, LINK_ON_DARK } from "@/lib/ui";
 
 export default function RecuperarUsuarioPage() {
   const [email, setEmail] = useState("");
@@ -33,11 +34,11 @@ export default function RecuperarUsuarioPage() {
 
   if (done) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#FAFAFA] px-4 py-10">
+      <div className="flex min-h-screen items-center justify-center bg-[#1e1e1e] px-4 py-10 text-neutral-100">
         <AuthCard>
           <div className="flex flex-col gap-6 text-center">
-            <h1 className="text-2xl font-black text-foreground">Liberación Lince</h1>
-            <p className="text-sm leading-relaxed text-foreground/90">
+            <h1 className="text-2xl font-black text-neutral-100">Liberación Lince</h1>
+            <p className="text-sm leading-relaxed text-neutral-300">
               Gracias, enviamos tu usuario a tu correo de recuperación. Presiona confirmar para volver
               a la pantalla de inicio.
             </p>
@@ -54,13 +55,13 @@ export default function RecuperarUsuarioPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#FAFAFA] px-4 py-10">
+    <div className="flex min-h-screen items-center justify-center bg-[#1e1e1e] px-4 py-10 text-neutral-100">
       <AuthCard>
         <div className="flex flex-col gap-6">
-          <h1 className="text-center text-2xl font-black text-foreground">Liberación Lince</h1>
+          <h1 className="text-center text-2xl font-black text-neutral-100">Liberación Lince</h1>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="email-u" className="text-sm font-medium text-foreground/90">
+            <label htmlFor="email-u" className="text-sm font-medium text-neutral-200">
               Hola!, Ingresa tu correo de recuperación
             </label>
             <input
@@ -82,7 +83,7 @@ export default function RecuperarUsuarioPage() {
                   );
                 }
               }}
-              className="w-full rounded-xl border border-neutral-300 bg-white/90 px-3 py-2.5 text-foreground outline-none ring-lince-accent focus:border-lince-accent focus:ring-2"
+              className={INPUT_DARK}
             />
             <ErrorMessage message={emailError} />
           </div>
@@ -98,13 +99,13 @@ export default function RecuperarUsuarioPage() {
                 setEmailError(null);
               }
             }}
-            className="bg-lince-primary hover:brightness-95"
+            className="bg-[#5FAF2E] hover:bg-[#A6E22E]"
           >
             Enviar código
           </CountdownButton>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="codigo-u" className="text-sm font-medium text-foreground/90">
+            <label htmlFor="codigo-u" className="text-sm font-medium text-neutral-200">
               Ingresa el código recibido
             </label>
             <input
@@ -121,7 +122,7 @@ export default function RecuperarUsuarioPage() {
                   );
                 }
               }}
-              className="w-full rounded-xl border border-neutral-300 bg-white/90 px-3 py-2.5 text-foreground outline-none ring-lince-accent focus:border-lince-accent focus:ring-2"
+              className={INPUT_DARK}
             />
             <ErrorMessage message={codigoError} />
           </div>
@@ -129,13 +130,13 @@ export default function RecuperarUsuarioPage() {
           <button
             type="button"
             onClick={validarYContinuar}
-            className="w-full rounded-xl bg-lince-primary py-3 text-sm font-bold text-[#FAFAFA] shadow transition hover:brightness-95"
+            className="w-full rounded-xl bg-[#5FAF2E] py-3 text-sm font-bold text-[#FAFAFA] shadow transition hover:bg-[#A6E22E]"
           >
             Siguiente...
           </button>
 
           <p className="text-center text-sm">
-            <Link href="/login/estudiante" className="font-medium text-[#3B6EAA] hover:underline">
+            <Link href="/login/estudiante" className={LINK_ON_DARK}>
               Volver al inicio de sesión
             </Link>
           </p>

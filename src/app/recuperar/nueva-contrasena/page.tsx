@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { AuthCard } from "@/components/AuthCard";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { PasswordInput } from "@/components/PasswordInput";
+import { LINK_ON_DARK } from "@/lib/ui";
 
 export default function NuevaContrasenaPage() {
   const router = useRouter();
@@ -20,8 +21,8 @@ export default function NuevaContrasenaPage() {
     "la contraseña debe tener un mínimo de 10 caracteres y puede incluir caracteres especiales";
 
   const buttonClass = useMemo(() => {
-    if (!bothFilled) return "bg-neutral-400 text-neutral-200 cursor-not-allowed";
-    if (a !== b) return "bg-neutral-400 text-neutral-200 cursor-not-allowed";
+    if (!bothFilled) return "bg-neutral-600 text-neutral-300 cursor-not-allowed";
+    if (a !== b) return "bg-neutral-600 text-neutral-300 cursor-not-allowed";
     return "bg-[#3B6EAA] text-[#FAFAFA] hover:brightness-95";
   }, [a, b, bothFilled]);
 
@@ -40,10 +41,10 @@ export default function NuevaContrasenaPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#FAFAFA] px-4 py-10">
+    <div className="flex min-h-screen items-center justify-center bg-[#1e1e1e] px-4 py-10 text-neutral-100">
       <AuthCard>
         <div className="flex flex-col gap-6">
-          <h1 className="text-center text-2xl font-black text-foreground">Liberación Lince</h1>
+          <h1 className="text-center text-2xl font-black text-neutral-100">Liberación Lince</h1>
 
           <PasswordInput
             label="ingrese nueva contraseña"
@@ -80,7 +81,7 @@ export default function NuevaContrasenaPage() {
           </button>
 
           <p className="text-center text-sm">
-            <Link href="/login/estudiante" className="font-medium text-[#3B6EAA] hover:underline">
+            <Link href="/login/estudiante" className={LINK_ON_DARK}>
               Cancelar
             </Link>
           </p>

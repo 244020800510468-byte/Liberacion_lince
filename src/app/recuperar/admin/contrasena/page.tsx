@@ -8,6 +8,7 @@ import { CountdownButton } from "@/components/CountdownButton";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { PasswordInput } from "@/components/PasswordInput";
 import { mockAdmin, MOCK_RECOVERY_CODE } from "@/lib/mock";
+import { INPUT_DARK, LINK_ON_DARK } from "@/lib/ui";
 
 type Step = "codigo" | "nueva";
 
@@ -64,13 +65,13 @@ export default function RecuperarAdminContrasenaPage() {
 
   if (step === "codigo") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#FAFAFA] px-4 py-10">
-        <AuthCard variant="admin">
+      <div className="flex min-h-screen items-center justify-center bg-[#1e1e1e] px-4 py-10 text-neutral-100">
+        <AuthCard>
           <div className="flex flex-col gap-6">
-            <h1 className="text-center text-2xl font-black text-white drop-shadow">Liberación Lince</h1>
+            <h1 className="text-center text-2xl font-black text-neutral-100">Liberación Lince</h1>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="adm-email" className="text-sm font-medium text-white/95">
+              <label htmlFor="adm-email" className="text-sm font-medium text-neutral-200">
                 Hola!, Ingresa tu correo de recuperación
               </label>
               <input
@@ -91,7 +92,7 @@ export default function RecuperarAdminContrasenaPage() {
                     );
                   }
                 }}
-                className="w-full rounded-xl border border-white/40 bg-white/95 px-3 py-2.5 text-foreground outline-none ring-white focus:ring-2"
+                className={INPUT_DARK}
               />
               <ErrorMessage message={emailError} />
             </div>
@@ -107,13 +108,13 @@ export default function RecuperarAdminContrasenaPage() {
                   setEmailError(null);
                 }
               }}
-              className="bg-lince-primary hover:brightness-95"
+              className="bg-[#5FAF2E] hover:bg-[#A6E22E]"
             >
               Enviar código
             </CountdownButton>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="adm-codigo" className="text-sm font-medium text-white/95">
+              <label htmlFor="adm-codigo" className="text-sm font-medium text-neutral-200">
                 Ingresa el código recibido
               </label>
               <input
@@ -130,7 +131,7 @@ export default function RecuperarAdminContrasenaPage() {
                     );
                   }
                 }}
-                className="w-full rounded-xl border border-white/40 bg-white/95 px-3 py-2.5 text-foreground outline-none ring-white focus:ring-2"
+                className={INPUT_DARK}
               />
               <ErrorMessage message={codigoError} />
             </div>
@@ -138,13 +139,13 @@ export default function RecuperarAdminContrasenaPage() {
             <button
               type="button"
               onClick={siguienteCodigo}
-              className="w-full rounded-xl bg-lince-primary py-3 text-sm font-bold text-[#FAFAFA] shadow transition hover:brightness-95"
+              className="w-full rounded-xl bg-[#5FAF2E] py-3 text-sm font-bold text-[#FAFAFA] shadow transition hover:bg-[#A6E22E]"
             >
               Siguiente...
             </button>
 
             <p className="text-center text-sm">
-              <Link href="/login/admin" className="font-medium text-lince-blue hover:underline">
+              <Link href="/login/admin" className={LINK_ON_DARK}>
                 Volver al inicio de sesión
               </Link>
             </p>
@@ -155,10 +156,10 @@ export default function RecuperarAdminContrasenaPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#FAFAFA] px-4 py-10">
-      <AuthCard variant="admin">
+    <div className="flex min-h-screen items-center justify-center bg-[#1e1e1e] px-4 py-10 text-neutral-100">
+      <AuthCard>
         <div className="flex flex-col gap-6">
-          <h1 className="text-center text-2xl font-black text-white drop-shadow">Liberación Lince</h1>
+          <h1 className="text-center text-2xl font-black text-neutral-100">Liberación Lince</h1>
 
           <PasswordInput
             label="ingrese nueva contraseña"
@@ -195,13 +196,13 @@ export default function RecuperarAdminContrasenaPage() {
           <button
             type="button"
             onClick={confirmarNueva}
-            className="w-full rounded-xl bg-lince-primary py-3 text-sm font-bold text-[#FAFAFA] shadow transition hover:brightness-95"
+            className="w-full rounded-xl bg-[#5FAF2E] py-3 text-sm font-bold text-[#FAFAFA] shadow transition hover:bg-[#A6E22E]"
           >
             Siguiente
           </button>
 
           <p className="text-center text-sm">
-            <Link href="/login/admin" className="font-medium text-lince-blue hover:underline">
+            <Link href="/login/admin" className={LINK_ON_DARK}>
               Volver al inicio de sesión
             </Link>
           </p>
