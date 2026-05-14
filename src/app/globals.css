@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ebe4d8;
+  --foreground: #292524;
+  --lince-surface: #dfd6c8;
+  --lince-surface-deep: #d4cbbf;
+  --lince-input: #faf8f3;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-lince-card: var(--lince-surface);
+  --color-lince-primary: #22c55e;
+  --color-lince-accent: #4ade80;
+  --color-lince-bg: var(--background);
+  --color-lince-blue: #2563eb;
+  --color-lince-admin: var(--lince-surface-deep);
+  --color-lince-error: #ef4444;
+  --color-lince-success: #22c55e;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
