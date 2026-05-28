@@ -1,6 +1,11 @@
 "use client";
 
 import { useId, useState } from "react";
+import {
+  PASSWORD_LENGTH_HINT,
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_LENGTH,
+} from "@/lib/password-validation";
 import { INPUT_DARK } from "@/lib/ui";
 
 type PasswordInputProps = {
@@ -13,6 +18,9 @@ type PasswordInputProps = {
   autoComplete?: string;
   name?: string;
   hint?: string;
+  showLengthHint?: boolean;
+  minLength?: number;
+  maxLength?: number;
 };
 
 export function PasswordInput({
@@ -25,6 +33,9 @@ export function PasswordInput({
   autoComplete = "current-password",
   name,
   hint,
+  showLengthHint = true,
+  minLength = PASSWORD_MIN_LENGTH,
+  maxLength = PASSWORD_MAX_LENGTH,
 }: PasswordInputProps) {
   const genId = useId();
   const id = idProp ?? genId;
@@ -38,6 +49,8 @@ export function PasswordInput({
       </label>
       {hint ? (
         <p className="text-xs text-[#15803d]">{hint}</p>
+      ) : showLengthHint ? (
+        <p className="text-xs text-[#15803d]">{PASSWORD_LENGTH_HINT}</p>
       ) : null}
       <div className="relative">
         <input
@@ -48,6 +61,8 @@ export function PasswordInput({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onBlur={onBlur}
+          minLength={minLength}
+          maxLength={maxLength}
           aria-invalid={error ? "true" : undefined}
           aria-describedby={error ? errorId : undefined}
           className={`${INPUT_DARK} pr-11`}

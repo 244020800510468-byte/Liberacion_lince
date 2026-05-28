@@ -2,33 +2,35 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import {
-  getStudentByMatricula,
-  initialLiberacionesForStudent,
-  mockStudent,
-} from "@/lib/mock";
+import { findStudentByMatricula, getAllStudentMatriculas } from "@/lib/db";
+import { initialLiberacionesForStudent } from "@/lib/mock";
 import type { DepartmentKey, Liberaciones } from "@/lib/types";
 
 export type StudentSession = {
   usuario: string;
   matricula: string;
+  nombre?: string;
 };
 
 export type AdminSession = {
   nEmpleado: string;
   departamento: DepartmentKey;
+  nombre?: string;
 };
 
 type SessionState = {
   student: StudentSession | null;
   admin: AdminSession | null;
   liberacionesByMatricula: Record<string, Liberaciones>;
-  loginStudent: (usuario: string, matricula: string) => void;
+  loginStudent: (usuario: string, matricula: string, nombre?: string) => void;
   logoutStudent: () => void;
-  loginAdmin: (nEmpleado: string, departamento: DepartmentKey) => void;
+  loginAdmin: (
+    nEmpleado: string,
+    departamento: DepartmentKey,
+    nombre?: string
+  ) => void;
   logoutAdmin: () => void;
   getLiberacionesForMatricula: (matricula: string) => Liberaciones | undefined;
-  /** Si la matrícula existe en el mock y no está en el mapa, la registra. Devuelve false si no existe en demo. */
   registerMatriculaIfKnown: (matricula: string) => boolean;
   liberarMatricula: (
     matricula: string,
@@ -38,9 +40,11 @@ type SessionState = {
 };
 
 function buildInitialMatriculaMap(): Record<string, Liberaciones> {
-  return {
-    [mockStudent.matricula]: initialLiberacionesForStudent(),
-  };
+  const map: Record<string, Liberaciones> = {};
+  for (const matricula of getAllStudentMatriculas()) {
+    map[matricula] = initialLiberacionesForStudent(matricula);
+  }
+  return map;
 }
 
 export const useSessionStore = create<SessionState>()(
@@ -50,13 +54,13 @@ export const useSessionStore = create<SessionState>()(
       admin: null,
       liberacionesByMatricula: buildInitialMatriculaMap(),
 
-      loginStudent: (usuario, matricula) =>
-        set({ student: { usuario, matricula }, admin: null }),
+      loginStudent: (usuario, matricula, nombre) =>
+        set({ student: { usuario, matricula, nombre }, admin: null }),
 
       logoutStudent: () => set({ student: null }),
 
-      loginAdmin: (nEmpleado, departamento) =>
-        set({ admin: { nEmpleado, departamento }, student: null }),
+      loginAdmin: (nEmpleado, departamento, nombre) =>
+        set({ admin: { nEmpleado, departamento, nombre }, student: null }),
 
       logoutAdmin: () => set({ admin: null }),
 
@@ -64,11 +68,11 @@ export const useSessionStore = create<SessionState>()(
         get().liberacionesByMatricula[matricula],
 
       registerMatriculaIfKnown: (matricula: string) => {
-        const student = getStudentByMatricula(matricula);
+        const student = findStudentByMatricula(matricula);
         if (!student) return false;
         const map = { ...get().liberacionesByMatricula };
         if (!map[matricula]) {
-          map[matricula] = initialLiberacionesForStudent();
+          map[matricula] = initialLiberacionesForStudent(matricula);
         }
         set({ liberacionesByMatricula: map });
         return true;

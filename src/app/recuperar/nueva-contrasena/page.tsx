@@ -6,6 +6,11 @@ import { useMemo, useState } from "react";
 import { AuthCard } from "@/components/AuthCard";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { PasswordInput } from "@/components/PasswordInput";
+import {
+  getPasswordLengthError,
+  isPasswordLengthValid,
+  PASSWORD_LENGTH_HINT,
+} from "@/lib/password-validation";
 import { LINK_ON_DARK } from "@/lib/ui";
 
 export default function NuevaContrasenaPage() {
@@ -15,25 +20,24 @@ export default function NuevaContrasenaPage() {
   const [matchError, setMatchError] = useState<string | null>(null);
 
   const bothFilled = a.length > 0 && b.length > 0;
-  const canSubmit = bothFilled && a === b && a.length >= 10;
-
-  const hint =
-    "la contraseña debe tener un mínimo de 10 caracteres y puede incluir caracteres especiales";
+  const lengthOk = isPasswordLengthValid(a);
+  const canSubmit = bothFilled && a === b && lengthOk;
 
   const buttonClass = useMemo(() => {
     if (!bothFilled) return "bg-stone-400 text-stone-700 cursor-not-allowed";
-    if (a !== b) return "bg-stone-400 text-stone-700 cursor-not-allowed";
+    if (a !== b || !lengthOk) return "bg-stone-400 text-stone-700 cursor-not-allowed";
     return "bg-[#3B6EAA] text-[#FAFAFA] hover:brightness-95";
-  }, [a, b, bothFilled]);
+  }, [a, b, bothFilled, lengthOk]);
 
   function submit() {
     if (!bothFilled) return;
-    if (a !== b) {
-      setMatchError("las contraseñas no coinciden, vuélvalo a intentar");
+    const lengthErr = getPasswordLengthError(a);
+    if (lengthErr) {
+      setMatchError(lengthErr);
       return;
     }
-    if (a.length < 10) {
-      setMatchError("las contraseñas no coinciden, vuélvalo a intentar");
+    if (a !== b) {
+      setMatchError("Las contraseñas no coinciden, vuélvalo a intentar");
       return;
     }
     setMatchError(null);
@@ -55,7 +59,7 @@ export default function NuevaContrasenaPage() {
               setA(v);
               if (matchError) setMatchError(null);
             }}
-            hint={hint}
+            hint={PASSWORD_LENGTH_HINT}
           />
 
           <PasswordInput
@@ -67,6 +71,7 @@ export default function NuevaContrasenaPage() {
               setB(v);
               if (matchError) setMatchError(null);
             }}
+            showLengthHint={false}
           />
 
           <ErrorMessage message={matchError} />
@@ -75,7 +80,7 @@ export default function NuevaContrasenaPage() {
             type="button"
             disabled={!canSubmit}
             onClick={submit}
-            className={`w-full rounded-xl py-3 text-sm font-bold shadow transition ${buttonClass}`}
+            className={`w-full rounded-xl py-3 text-sm font-bold shadow transition-all duration-200 ${buttonClass}`}
           >
             confirmar
           </button>

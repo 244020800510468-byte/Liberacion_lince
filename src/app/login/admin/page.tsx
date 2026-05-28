@@ -4,10 +4,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AuthCard } from "@/components/AuthCard";
+import { BackToHomeLink } from "@/components/HomeLoginLink";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { PasswordInput } from "@/components/PasswordInput";
-import { getDepartmentFromEmpleado } from "@/lib/departments";
-import { mockAdmin } from "@/lib/mock";
+import { staffDb } from "@/lib/mock";
+import {
+  getPasswordLengthError,
+  isPasswordLengthValid,
+} from "@/lib/password-validation";
 import { useSessionHydrated } from "@/lib/use-session-hydrated";
 import { INPUT_DARK, LINK_ON_DARK } from "@/lib/ui";
 import { useSessionStore } from "@/store/session-store";
@@ -21,28 +25,56 @@ export default function LoginAdminPage() {
   const [contrasena, setContrasena] = useState("");
   const [empleadoError, setEmpleadoError] = useState<string | null>(null);
   const [contrasenaError, setContrasenaError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  function submit() {
-    if (!storeHydrated) return;
+  async function submit() {
+    if (!storeHydrated || loading) return;
 
-    const dept = getDepartmentFromEmpleado(nEmpleado.trim());
     let eErr: string | null = null;
-    let pErr: string | null = null;
+    let pErr: string | null = getPasswordLengthError(contrasena);
 
-    if (nEmpleado.trim() !== mockAdmin.nEmpleado || !dept) {
-      eErr = "No se encontró coincidencia con el usuario que ingresó, Inténtelo de nuevo";
-    }
-    if (contrasena !== mockAdmin.contrasena) {
-      pErr = "Contraseña incorrecta, Inténtelo de nuevo";
+    if (!nEmpleado.trim()) {
+      eErr = "Ingrese su número de empleado.";
     }
 
     setEmpleadoError(eErr);
     setContrasenaError(pErr);
 
-    if (eErr || pErr || !dept) return;
+    if (eErr || pErr) return;
 
-    loginAdmin(mockAdmin.nEmpleado, dept);
-    router.push("/admin/dashboard");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/login/admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nEmpleado, contrasena }),
+      });
+      const data = (await res.json()) as {
+        error?: string;
+        nEmpleado?: string;
+        departamento?: import("@/lib/types").DepartmentKey;
+        nombre?: string;
+      };
+
+      if (!res.ok) {
+        if (data.error?.toLowerCase().includes("contraseña")) {
+          setContrasenaError(data.error);
+        } else {
+          setEmpleadoError(
+            data.error ??
+              "No se encontró coincidencia con el usuario que ingresó, Inténtelo de nuevo"
+          );
+        }
+        return;
+      }
+
+      loginAdmin(data.nEmpleado!, data.departamento!, data.nombre);
+      router.push("/admin/dashboard");
+    } catch {
+      setEmpleadoError("No se pudo conectar con el servidor. Intente de nuevo.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -61,17 +93,15 @@ export default function LoginAdminPage() {
               <input
                 id="nempleado"
                 name="nEmpleado"
+                placeholder={staffDb[0].nEmpleado}
                 value={nEmpleado}
                 onChange={(e) => {
                   setNEmpleado(e.target.value);
                   if (empleadoError) setEmpleadoError(null);
                 }}
                 onBlur={() => {
-                  const d = getDepartmentFromEmpleado(nEmpleado.trim());
-                  if (nEmpleado.trim() && (!d || nEmpleado.trim() !== mockAdmin.nEmpleado)) {
-                    setEmpleadoError(
-                      "No se encontró coincidencia con el usuario que ingresó, Inténtelo de nuevo"
-                    );
+                  if (!nEmpleado.trim()) {
+                    setEmpleadoError("Ingrese su número de empleado.");
                   }
                 }}
                 className={INPUT_DARK}
@@ -88,8 +118,8 @@ export default function LoginAdminPage() {
                 if (contrasenaError) setContrasenaError(null);
               }}
               onBlur={() => {
-                if (contrasena && contrasena !== mockAdmin.contrasena) {
-                  setContrasenaError("Contraseña incorrecta, Inténtelo de nuevo");
+                if (contrasena && !isPasswordLengthValid(contrasena)) {
+                  setContrasenaError(getPasswordLengthError(contrasena));
                 }
               }}
               error={contrasenaError}
@@ -103,10 +133,10 @@ export default function LoginAdminPage() {
           <button
             type="button"
             onClick={submit}
-            disabled={!storeHydrated}
-            className="w-full rounded-xl bg-[#22c55e] py-3 text-center text-sm font-bold text-white shadow transition hover:bg-[#4ade80] disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={!storeHydrated || loading}
+            className="w-full rounded-xl bg-[#22c55e] py-3 text-center text-sm font-bold text-white shadow transition-all duration-200 hover:scale-[1.01] hover:bg-[#4ade80] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Iniciar sesion
+            {loading ? "Verificando…" : "Iniciar sesion"}
           </button>
 
           <div className="flex flex-col gap-2 text-center text-sm">
@@ -116,6 +146,7 @@ export default function LoginAdminPage() {
             <Link href="/recuperar/admin/empleado" className={LINK_ON_DARK}>
               ¿Olvidaste tu número de empleado?
             </Link>
+            <BackToHomeLink className="mt-1" />
           </div>
         </div>
       </AuthCard>

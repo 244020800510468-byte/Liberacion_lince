@@ -8,6 +8,11 @@ import { CountdownButton } from "@/components/CountdownButton";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { PasswordInput } from "@/components/PasswordInput";
 import { mockAdmin, MOCK_RECOVERY_CODE } from "@/lib/mock";
+import {
+  getPasswordLengthError,
+  isPasswordLengthValid,
+  PASSWORD_LENGTH_HINT,
+} from "@/lib/password-validation";
 import { INPUT_DARK, LINK_ON_DARK } from "@/lib/ui";
 
 type Step = "codigo" | "nueva";
@@ -50,13 +55,14 @@ export default function RecuperarAdminContrasenaPage() {
       return;
     }
 
-    if (a.length > 6 || b.length > 6) {
-      setFormError("La contraseña no puede exceder 6 caracteres");
+    const lengthErr = getPasswordLengthError(a);
+    if (!isPasswordLengthValid(a) || !isPasswordLengthValid(b)) {
+      setFormError(lengthErr ?? PASSWORD_LENGTH_HINT);
       return;
     }
 
     if (a !== b) {
-      setFormError("La contraseñas no coinciden");
+      setFormError("Las contraseñas no coinciden");
       return;
     }
 
@@ -170,10 +176,9 @@ export default function RecuperarAdminContrasenaPage() {
               if (formError) setFormError(null);
             }}
             onBlur={() => {
-              if (a.length > 6) {
-                setFormError("La contraseña no puede exceder 6 caracteres");
-              }
+              if (a) setFormError(getPasswordLengthError(a));
             }}
+            hint={PASSWORD_LENGTH_HINT}
           />
 
           <PasswordInput
@@ -184,11 +189,7 @@ export default function RecuperarAdminContrasenaPage() {
               setB(v);
               if (formError) setFormError(null);
             }}
-            onBlur={() => {
-              if (b.length > 6) {
-                setFormError("La contraseña no puede exceder 6 caracteres");
-              }
-            }}
+            showLengthHint={false}
           />
 
           <ErrorMessage message={formError} />

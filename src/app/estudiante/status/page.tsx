@@ -1,14 +1,15 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Suspense, useMemo } from "react";
 import { AuthCard } from "@/components/AuthCard";
+import { HomeLoginLink } from "@/components/HomeLoginLink";
 import { DASHBOARD_DEPT_ORDER } from "@/lib/departments";
+import { findStudentByMatricula } from "@/lib/db";
 import { mockStudent } from "@/lib/mock";
 import { useSessionStore } from "@/store/session-store";
 
 function EstudianteStatusContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const isPreview = searchParams.get("preview") === "1";
 
@@ -16,17 +17,18 @@ function EstudianteStatusContent() {
   const liberacionesByMatricula = useSessionStore(
     (s) => s.liberacionesByMatricula
   );
-  const logoutStudent = useSessionStore((s) => s.logoutStudent);
 
   const matricula = isPreview ? mockStudent.matricula : student?.matricula;
   const lib = matricula ? liberacionesByMatricula[matricula] : undefined;
 
   const profile = useMemo(() => {
     if (!matricula) return null;
+    const record = findStudentByMatricula(matricula);
+    if (!record) return null;
     return {
-      nombre: mockStudent.nombre,
-      email: mockStudent.email,
-      matricula: mockStudent.matricula,
+      nombre: record.nombre,
+      email: record.email,
+      matricula: record.matricula,
     };
   }, [matricula]);
 
@@ -49,7 +51,7 @@ function EstudianteStatusContent() {
           ) : null}
 
           {profile ? (
-            <div className="overflow-hidden rounded-xl border border-stone-400 bg-[#d4cbbf]">
+            <div className="animate-scale-in overflow-hidden rounded-xl border border-stone-400 bg-[#d4cbbf]">
               <table className="w-full text-left text-sm">
                 <tbody>
                   <tr className="border-b border-stone-400">
@@ -82,14 +84,20 @@ function EstudianteStatusContent() {
                   </tr>
                 </thead>
                 <tbody>
-                  {DASHBOARD_DEPT_ORDER.map(({ key, label }) => {
+                  {DASHBOARD_DEPT_ORDER.map(({ key, label }, index) => {
                     const ok = lib ? Boolean(lib[key]) : false;
                     return (
-                      <tr key={key} className="border-b border-stone-400/90 last:border-0 bg-[#ebe4d8]">
+                      <tr
+                        key={key}
+                        className="animate-slide-up border-b border-stone-400/90 bg-[#ebe4d8] last:border-0"
+                        style={{ animationDelay: `${index * 40}ms` }}
+                      >
                         <td className="px-3 py-2.5 text-stone-800">{label}</td>
                         <td className="px-3 py-2.5">
                           {ok ? (
-                            <span className="font-medium text-[#16a34a]">✅ Liberado</span>
+                            <span className="font-medium text-[#16a34a] transition-all duration-300">
+                              ✅ Liberado
+                            </span>
                           ) : (
                             <span className="text-stone-600">❌ Pendiente</span>
                           )}
@@ -103,29 +111,18 @@ function EstudianteStatusContent() {
           </div>
 
           {anyPending ? (
-            <p className="rounded-2xl border border-[#22c55e]/35 bg-[#d4cbbf] px-4 py-3 text-center text-sm font-medium text-stone-800">
+            <p className="animate-pulse-soft rounded-2xl border border-[#22c55e]/35 bg-[#d4cbbf] px-4 py-3 text-center text-sm font-medium text-stone-800">
               Aún no has sido liberado, espera a que tu asesor o los departamentos te firmen
             </p>
           ) : null}
 
           {allReleased ? (
-            <p className="rounded-2xl border border-[#16a34a]/45 bg-[#d4cbbf] px-4 py-3 text-center text-sm font-bold text-[#15803d]">
+            <p className="animate-scale-in rounded-2xl border border-[#16a34a]/45 bg-[#d4cbbf] px-4 py-3 text-center text-sm font-bold text-[#15803d]">
               ¡FELICIDADES!, Has sido liberado y todo está en orden. Ya puedes reinscribirte
             </p>
           ) : null}
 
-          <button
-            type="button"
-            onClick={() => {
-              if (!isPreview) {
-                logoutStudent();
-              }
-              router.push("/");
-            }}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-stone-400 bg-[#dfd6c8] px-4 py-2.5 text-sm font-bold text-stone-900 transition hover:bg-[#cfc6b8]"
-          >
-            <span aria-hidden>←</span> Atrás
-          </button>
+          <HomeLoginLink className="w-full" />
         </div>
       </AuthCard>
     </div>
